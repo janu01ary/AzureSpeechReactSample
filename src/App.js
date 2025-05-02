@@ -13,7 +13,7 @@ export default function App() {
     async function sttFromMic() {
         const tokenObj = await getTokenOrRefresh();
         const speechConfig = speechsdk.SpeechConfig.fromAuthorizationToken(tokenObj.authToken, tokenObj.region);
-        speechConfig.speechRecognitionLanguage = 'en-US';
+        speechConfig.speechRecognitionLanguage = 'ko-KR';
         
         const audioConfig = speechsdk.AudioConfig.fromDefaultMicrophoneInput();
         const recognizer = new speechsdk.SpeechRecognizer(speechConfig, audioConfig);
@@ -23,6 +23,7 @@ export default function App() {
         recognizer.recognizeOnceAsync(result => {
             if (result.reason === ResultReason.RecognizedSpeech) {
                 setDisplayText(`RECOGNIZED: Text=${result.text}`);
+                // ai api 호출
             } else {
                 setDisplayText('ERROR: Speech was cancelled or could not be recognized. Ensure your microphone is working properly.');
             }
@@ -82,7 +83,7 @@ export default function App() {
 
         const tokenObj = await getTokenOrRefresh();
         const speechConfig = speechsdk.SpeechConfig.fromAuthorizationToken(tokenObj.authToken, tokenObj.region);
-        speechConfig.speechRecognitionLanguage = 'en-US';
+        speechConfig.speechRecognitionLanguage = 'ko-KR';
 
         const audioConfig = speechsdk.AudioConfig.fromWavFileInput(audioFile);
         const recognizer = new speechsdk.SpeechRecognizer(speechConfig, audioConfig);
