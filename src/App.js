@@ -3,6 +3,7 @@ import { Container } from 'reactstrap';
 import { getTokenOrRefresh } from './token_util';
 import './custom.css'
 import { ResultReason } from 'microsoft-cognitiveservices-speech-sdk';
+import axios from "axios"; // npm install axios 필요
 
 const speechsdk = require('microsoft-cognitiveservices-speech-sdk')
 
@@ -23,7 +24,7 @@ export default function App() {
         recognizer.recognizeOnceAsync(result => {
             if (result.reason === ResultReason.RecognizedSpeech) {
                 setDisplayText(`RECOGNIZED: Text=${result.text}`);
-                // ai api 호출
+                callAiApi(result.text);
             } else {
                 setDisplayText('ERROR: Speech was cancelled or could not be recognized. Ensure your microphone is working properly.');
             }
@@ -98,6 +99,34 @@ export default function App() {
 
             setDisplayText(fileInfo + text);
         });
+    }
+
+    async function callAiApi(text) {
+        const url = "https://25047-m9mdelel-eastus2.openai.azure.com/openai/deployments/gpt-4/chat/completions?api-version=2025-01-01-preview";
+        const headers = {
+            "Content-Type": "application/json",
+            "api-key": "3wGlxEdoz4X5ZBFl7ZebwodS6hBIONES8VwB9KMzpRf7q76y16hXJQQJ99BDACHYHv6XJ3w3AAAAACOGSgKr"
+        };
+        const data = {
+            messages: [
+                {
+                    "role": "system",
+                    "content": "검색과 필터링에 사용할 키워드를 추출할 거야. 의류 상품이나 특징과 관련된 키워드를 추출해서, ','으로 구분해줘"
+                },
+                {
+                    "role": "user",
+                    "content": text
+                }
+            ]
+        };
+      
+        axios.post(url, data, { headers })
+            .then((response) => {
+                console.log(response)
+            })
+            .catch((error) => {
+                console.error(error)
+            });
     }
 
     return (
